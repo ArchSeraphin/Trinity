@@ -50,10 +50,13 @@ a:focus {
 }
 
 .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
   height: 80px;
   padding: 0 2rem;
-  background-color: #111827;
-  color: #fff;
+  background-color: #fff;
+  color: #111827;
 }
 
 .site-header__inner {
@@ -64,6 +67,8 @@ a:focus {
   align-items: center;
   justify-content: space-between;
   gap: 2rem;
+  position: relative;
+  z-index: 50;
 }
 
 .site-branding {
@@ -119,7 +124,7 @@ a:focus {
 }
 
 .primary-menu a {
-  color: #fff;
+  color: #111827;
   text-decoration: none;
   font-family: 'Space Mono', 'Courier New', Courier, monospace;
   font-weight: 400;
@@ -130,7 +135,8 @@ a:focus {
 
 .primary-menu a:hover,
 .primary-menu a:focus {
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .menu-toggle {
@@ -146,7 +152,7 @@ a:focus {
 }
 
 .menu-toggle:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid #111827;
   outline-offset: 4px;
 }
 
@@ -162,7 +168,7 @@ a:focus {
   left: 0;
   width: 100%;
   height: 2px;
-  background-color: #fff;
+  background-color: #111827;
   border-radius: 2px;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -232,16 +238,21 @@ a:focus {
 
   .primary-navigation {
     position: fixed;
-    inset: 0;
-    justify-content: center;
-    align-items: center;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 72px);
     background-color: #E00000;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
     transition: opacity 0.3s ease, visibility 0.3s ease;
-    padding: 4rem 1.5rem;
+    padding: 3rem 1.5rem;
     z-index: 20;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-y: auto;
   }
 
   body.menu-open .primary-navigation {
@@ -265,7 +276,7 @@ a:focus {
 
   .menu-toggle {
     display: flex;
-    z-index: 30;
+    z-index: 60;
   }
 
   body.menu-open {
@@ -341,7 +352,8 @@ a:focus {
 
 .footer-menu a:hover,
 .footer-menu a:focus {
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .site-footer__note {
