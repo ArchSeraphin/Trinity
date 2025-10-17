@@ -72,6 +72,14 @@ function trinity_enqueue_assets() {
     array( 'trinity-fonts' ),
     $theme_version
   );
+
+  wp_enqueue_script(
+    'trinity-navigation',
+    get_template_directory_uri() . '/assets/js/navigation.js',
+    array(),
+    $theme_version,
+    true
+  );
 }
 add_action( 'wp_enqueue_scripts', 'trinity_enqueue_assets' );
 
