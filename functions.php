@@ -23,6 +23,7 @@ if ( ! function_exists( 'trinity_setup' ) ) {
     register_nav_menus(
       array(
         'primary' => __( 'Menu principal', 'trinity' ),
+        'footer'  => __( 'Menu de pied de page', 'trinity' ),
       )
     );
 
@@ -59,9 +60,16 @@ function trinity_enqueue_assets() {
   $theme_version = wp_get_theme()->get( 'Version' );
 
   wp_enqueue_style(
+    'trinity-fonts',
+    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Space+Mono:wght@400;700&display=swap',
+    array(),
+    null
+  );
+
+  wp_enqueue_style(
     'trinity-style',
     get_stylesheet_uri(),
-    array(),
+    array( 'trinity-fonts' ),
     $theme_version
   );
 }
