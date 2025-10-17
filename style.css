@@ -117,12 +117,13 @@ a:focus {
   text-transform: uppercase;
   color: #111827;
   background-color: #fff;
+  gap: 64px;
 }
 
 .footer-menu {
   display: flex;
   align-items: center;
-  gap: 32px;
+  gap: 64px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -137,4 +138,8 @@ a:focus {
 .footer-menu a:hover,
 .footer-menu a:focus {
   text-decoration: underline;
+}
+
+.site-footer__note {
+  letter-spacing: 0.08em;
 }

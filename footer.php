@@ -22,6 +22,7 @@
         ?>
       </nav>
     <?php endif; ?>
+    <span class="site-footer__note"><?php esc_html_e( 'Tous droits réservés.', 'trinity' ); ?></span>
   </footer>
   <?php wp_footer(); ?>
 </body>
