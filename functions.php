@@ -5,6 +5,9 @@
  * @package Trinity
  */
 
+require_once get_template_directory() . '/addon/resize-upload.php';
+
+
 if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
