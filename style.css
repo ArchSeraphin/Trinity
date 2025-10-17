@@ -143,3 +143,21 @@ a:focus {
 .site-footer__note {
   letter-spacing: 0.08em;
 }
+
+@media (max-width: 600px) {
+  .site-footer {
+    flex-direction: column;
+    height: auto;
+    padding: 12px 0;
+    gap: 16px;
+  }
+
+  .footer-menu {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .site-footer__note {
+    margin-left: 0;
+  }
+}
