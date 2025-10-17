@@ -1,0 +1,101 @@
+/*
+Theme Name: Trinity
+Theme URI: https://example.com/trinity
+Author: Trinity Team
+Author URI: https://example.com
+Description: Thème WordPress personnalisé minimaliste créé pour le projet Trinity.
+Version: 1.0.0
+Tested up to: 6.4
+Requires at least: 6.0
+Requires PHP: 7.4
+Text Domain: trinity
+License: GNU General Public License v2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+*/
+
+/* Reset simple pour la typographie du thème */
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: #222;
+  background-color: #f7f7f7;
+}
+
+a {
+  color: #0073aa;
+}
+
+a:hover,
+a:focus {
+  color: #005177;
+}
+
+.site-header {
+  padding: 2rem 1rem;
+  background-color: #111827;
+  color: #fff;
+}
+
+.site-title {
+  margin: 0;
+  font-size: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.site-description {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.site-content {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 10px 35px rgba(17, 24, 39, 0.08);
+}
+
+.post {
+  padding: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.post:last-child {
+  border-bottom: none;
+}
+
+.post-title {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+.post-meta {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.post-excerpt,
+.post-content {
+  margin-bottom: 1.5rem;
+}
+
+.site-footer {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
