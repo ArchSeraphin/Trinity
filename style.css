@@ -190,6 +190,122 @@ p {
   width: 100%;
   height: 495px;
   object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.photo-card:hover .photo-card__image,
+.photo-card:focus-within .photo-card__image {
+  transform: scale(1.03);
+}
+
+.photo-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.photo-card:hover .photo-card__overlay,
+.photo-card:focus-within .photo-card__overlay {
+  opacity: 1;
+  visibility: visible;
+}
+
+.photo-card__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s ease;
+  z-index: 2;
+}
+
+.photo-card__link:hover,
+.photo-card__link:focus-visible {
+  transform: scale(1.05);
+}
+
+.photo-card__icon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.photo-card__icon--view {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='none' stroke='%23FFFFFF' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 16s5.5-10 14-10 14 10 14 10-5.5 10-14 10S2 16 2 16Z'/%3E%3Ccircle cx='16' cy='16' r='4.5'/%3E%3C/svg%3E");
+}
+
+.photo-card__icon--expand {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23FFFFFF' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='3 8 3 3 8 3'/%3E%3Cpolyline points='17 12 17 17 12 17'/%3E%3Cline x1='3' y1='3' x2='8.5' y2='8.5'/%3E%3Cline x1='11.5' y1='11.5' x2='17' y2='17'/%3E%3C/svg%3E");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 16px 16px;
+  z-index: 2;
+}
+
+.photo-card__icon--expand:hover,
+.photo-card__icon--expand:focus-visible {
+  transform: scale(1.05);
+}
+
+.photo-card__meta {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  color: #fff;
+  font-family: 'Space Mono', 'Courier New', Courier, monospace;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.photo-card__meta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 100%);
+  z-index: -1;
+}
+
+.photo-card:hover .photo-card__meta,
+.photo-card:focus-within .photo-card__meta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.photo-card__title,
+.photo-card__category {
+  margin: 0;
 }
 
 @media (max-width: 768px) {

@@ -49,9 +49,61 @@ if ( ! $image_url ) {
 }
 
 $image_alt = $image_alt ? $image_alt : get_the_title( $photo_id );
+
+$photo_title = get_the_title( $photo_id );
+$photo_link  = get_permalink( $photo_id );
+$photo_term  = '';
+
+if ( function_exists( 'get_field' ) ) {
+  $raw_terms = get_field( 'categorie', $photo_id );
+
+  if ( $raw_terms instanceof WP_Term ) {
+    $raw_terms = array( $raw_terms );
+  }
+
+  if ( is_array( $raw_terms ) && ! empty( $raw_terms ) ) {
+    $term_names = array();
+
+    foreach ( $raw_terms as $term_item ) {
+      if ( $term_item instanceof WP_Term ) {
+        $term_names[] = $term_item->name;
+      } elseif ( is_array( $term_item ) && isset( $term_item['name'] ) ) {
+        $term_names[] = $term_item['name'];
+      } elseif ( is_numeric( $term_item ) ) {
+        $term_object = get_term( (int) $term_item );
+        if ( $term_object && ! is_wp_error( $term_object ) ) {
+          $term_names[] = $term_object->name;
+        }
+      } elseif ( is_string( $term_item ) && $term_item ) {
+        $term_names[] = $term_item;
+      }
+    }
+
+    if ( ! empty( $term_names ) ) {
+      $photo_term = implode( ' / ', array_map( 'sanitize_text_field', $term_names ) );
+    }
+  } elseif ( is_string( $raw_terms ) ) {
+    $photo_term = $raw_terms;
+  }
+}
+
+$photo_term = is_string( $photo_term ) ? $photo_term : '';
 ?>
 <article class="photo-card">
   <figure class="photo-card__figure">
     <img class="photo-card__image" src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>" loading="lazy" />
+    <div class="photo-card__overlay">
+      <a class="photo-card__link" href="<?php echo esc_url( $photo_link ); ?>">
+        <span class="photo-card__icon photo-card__icon--view" aria-hidden="true"></span>
+        <span class="screen-reader-text"><?php esc_html_e( 'Voir la photo', 'trinity' ); ?></span>
+      </a>
+      <button type="button" class="photo-card__icon photo-card__icon--expand" aria-label="<?php esc_attr_e( 'Agrandir la photo', 'trinity' ); ?>"></button>
+    </div>
+    <figcaption class="photo-card__meta">
+      <span class="photo-card__title"><?php echo esc_html( $photo_title ); ?></span>
+      <?php if ( $photo_term ) { ?>
+        <span class="photo-card__category"><?php echo esc_html( $photo_term ); ?></span>
+      <?php } ?>
+    </figcaption>
   </figure>
 </article>
