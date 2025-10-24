@@ -63,16 +63,9 @@ function trinity_enqueue_assets() {
   $theme_version = wp_get_theme()->get( 'Version' );
 
   wp_enqueue_style(
-    'trinity-fonts',
-    'https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Space+Mono:wght@400;700&display=swap',
-    array(),
-    null
-  );
-
-  wp_enqueue_style(
     'trinity-style',
     get_stylesheet_uri(),
-    array( 'trinity-fonts' ),
+    array(),
     $theme_version
   );
 

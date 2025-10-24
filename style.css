@@ -13,6 +13,62 @@ License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 */
 
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/poppins/Poppins-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/poppins/Poppins-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/poppins/Poppins-SemiBold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/space-mono/SpaceMono-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/space-mono/SpaceMono-Italic.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/space-mono/SpaceMono-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Space Mono';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/wp-content/uploads/fonts/space-mono/SpaceMono-BoldItalic.woff2') format('woff2');
+}
+
 /* Reset simple pour la typographie du thème */
 html {
   box-sizing: border-box;
@@ -37,7 +93,61 @@ h4,
 h5,
 h6 {
   font-family: 'Space Mono', 'Courier New', Courier, monospace;
+  text-transform: uppercase;
+}
+
+h1 {
+  font-size: 96px;
+  line-height: 1;
   font-weight: 700;
+  font-style: italic;
+}
+
+h2 {
+  font-size: 66px;
+  line-height: 58px;
+  font-weight: 400;
+  font-style: italic;
+}
+
+h3 {
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+
+p {
+  margin: 0 0 1rem;
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+
+.description {
+  font-family: 'Space Mono', 'Courier New', Courier, monospace;
+  font-weight: 400;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 768px) {
+  h1 {
+    font-size: 27.59px;
+    line-height: 1;
+  }
+
+  h2 {
+    font-size: 46px;
+    line-height: 48px;
+  }
 }
 
 a {
