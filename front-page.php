@@ -59,22 +59,92 @@ if ( $photo_query->have_posts() ) {
     data-per-page="<?php echo esc_attr( $per_page ); ?>"
     data-max-pages="<?php echo esc_attr( $max_pages ); ?>"
   >
-    <div class="home-photo-grid__inner" id="photo-grid">
-      <?php
-      while ( $photo_query->have_posts() ) {
-        $photo_query->the_post();
-        $photo_post = get_post();
-        get_template_part( 'templates_part/photo-card', null, array( 'photo_post' => $photo_post ) );
-      }
-      ?>
-    </div>
-    <?php if ( $max_pages > $current_page ) { ?>
-      <div class="home-photo-grid__actions">
-        <button type="button" class="home-photo-grid__load-more" id="photo-load-more">
-          <?php esc_html_e( 'Charger plus', 'trinity' ); ?>
-        </button>
+    <div class="home-photo-grid__container">
+      <form class="home-photo-grid__filters" id="photo-filters" aria-label="<?php esc_attr_e( 'Filtres du catalogue photo', 'trinity' ); ?>">
+        <div class="home-photo-grid__filter photo-filter" data-filter="category">
+          <input type="hidden" name="category" value="">
+          <button
+            type="button"
+            class="photo-filter__toggle"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="filter-category-menu"
+          >
+            <span class="photo-filter__text" data-default-label="<?php esc_attr_e( 'Catégories', 'trinity' ); ?>"><?php esc_html_e( 'Catégories', 'trinity' ); ?></span>
+            <span class="photo-filter__chevron" aria-hidden="true"></span>
+          </button>
+          <div class="photo-filter__menu-wrapper">
+            <ul class="photo-filter__menu" id="filter-category-menu" role="listbox">
+              <li class="photo-filter__option is-selected" role="option" aria-selected="true" data-value="" tabindex="0"><?php esc_html_e( 'Catégories', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="reception" tabindex="0"><?php esc_html_e( 'Réception', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="mariage" tabindex="0"><?php esc_html_e( 'Mariage', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="concert" tabindex="0"><?php esc_html_e( 'Concert', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="television" tabindex="0"><?php esc_html_e( 'Télévision', 'trinity' ); ?></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="home-photo-grid__filter photo-filter" data-filter="format">
+          <input type="hidden" name="format" value="">
+          <button
+            type="button"
+            class="photo-filter__toggle"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="filter-format-menu"
+          >
+            <span class="photo-filter__text" data-default-label="<?php esc_attr_e( 'Formats', 'trinity' ); ?>"><?php esc_html_e( 'Formats', 'trinity' ); ?></span>
+            <span class="photo-filter__chevron" aria-hidden="true"></span>
+          </button>
+          <div class="photo-filter__menu-wrapper">
+            <ul class="photo-filter__menu" id="filter-format-menu" role="listbox">
+              <li class="photo-filter__option is-selected" role="option" aria-selected="true" data-value="" tabindex="0"><?php esc_html_e( 'Formats', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="paysage" tabindex="0"><?php esc_html_e( 'Paysage', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="portrait" tabindex="0"><?php esc_html_e( 'Portrait', 'trinity' ); ?></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="home-photo-grid__filter home-photo-grid__filter--align-right photo-filter" data-filter="order">
+          <input type="hidden" name="order" value="desc">
+          <button
+            type="button"
+            class="photo-filter__toggle"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-controls="filter-order-menu"
+          >
+            <span class="photo-filter__text" data-default-label="<?php esc_attr_e( 'Trier par', 'trinity' ); ?>"><?php esc_html_e( 'Plus récentes', 'trinity' ); ?></span>
+            <span class="photo-filter__chevron" aria-hidden="true"></span>
+          </button>
+          <div class="photo-filter__menu-wrapper">
+            <ul class="photo-filter__menu" id="filter-order-menu" role="listbox">
+              <li class="photo-filter__option is-selected" role="option" aria-selected="true" data-value="desc" tabindex="0"><?php esc_html_e( 'Plus récentes', 'trinity' ); ?></li>
+              <li class="photo-filter__option" role="option" aria-selected="false" data-value="asc" tabindex="0"><?php esc_html_e( 'Plus anciennes', 'trinity' ); ?></li>
+            </ul>
+          </div>
+        </div>
+      </form>
+      <div class="home-photo-grid__inner" id="photo-grid">
+        <?php
+        while ( $photo_query->have_posts() ) {
+          $photo_query->the_post();
+          $photo_post = get_post();
+          get_template_part( 'templates_part/photo-card', null, array( 'photo_post' => $photo_post ) );
+        }
+        ?>
       </div>
-    <?php } ?>
+    </div>
+    <div class="home-photo-grid__actions">
+      <button
+        type="button"
+        class="home-photo-grid__load-more<?php echo ( $max_pages > $current_page ) ? '' : ' is-hidden'; ?>"
+        id="photo-load-more"
+        <?php echo ( $max_pages > $current_page ) ? '' : ' hidden="hidden"'; ?>
+      >
+        <?php esc_html_e( 'Charger plus', 'trinity' ); ?>
+      </button>
+    </div>
   </section>
   <?php
 }

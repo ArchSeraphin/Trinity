@@ -246,18 +246,50 @@ add_action( 'customize_preview_init', 'trinity_customize_preview_enqueue_scripts
 function trinity_ajax_load_more_photos() {
   check_ajax_referer( 'trinity_load_more_photos', 'nonce' );
 
-  $page     = isset( $_POST['page'] ) ? max( 1, (int) $_POST['page'] ) : 1;
-  $per_page = isset( $_POST['per_page'] ) ? max( 1, (int) $_POST['per_page'] ) : 8;
+  $page      = isset( $_POST['page'] ) ? max( 1, (int) $_POST['page'] ) : 1;
+  $per_page  = isset( $_POST['per_page'] ) ? max( 1, (int) $_POST['per_page'] ) : 8;
+  $category  = isset( $_POST['category'] ) ? sanitize_text_field( wp_unslash( $_POST['category'] ) ) : '';
+  $format    = isset( $_POST['format'] ) ? sanitize_text_field( wp_unslash( $_POST['format'] ) ) : '';
+  $order_dir = isset( $_POST['order'] ) ? strtolower( sanitize_text_field( wp_unslash( $_POST['order'] ) ) ) : 'desc';
 
-  $photo_query = new WP_Query(
-    array(
-      'post_type'      => 'photo',
-      'posts_per_page' => $per_page,
-      'paged'          => $page,
-      'post_status'    => 'publish',
-      'no_found_rows'  => false,
-    )
+  $tax_query = array();
+
+  if ( $category ) {
+    $tax_query[] = array(
+      'taxonomy' => 'categorie',
+      'field'    => 'slug',
+      'terms'    => $category,
+    );
+  }
+
+  if ( $format ) {
+    $tax_query[] = array(
+      'taxonomy' => 'format',
+      'field'    => 'slug',
+      'terms'    => $format,
+    );
+  }
+
+  if ( count( $tax_query ) > 1 ) {
+    $tax_query['relation'] = 'AND';
+  }
+
+  $query_args = array(
+    'post_type'      => 'photo',
+    'posts_per_page' => $per_page,
+    'paged'          => $page,
+    'post_status'    => 'publish',
+    'no_found_rows'  => false,
+    'orderby'        => 'meta_value',
+    'meta_key'       => 'date',
+    'order'          => ( 'asc' === $order_dir ) ? 'ASC' : 'DESC',
   );
+
+  if ( ! empty( $tax_query ) ) {
+    $query_args['tax_query'] = $tax_query;
+  }
+
+  $photo_query = new WP_Query( $query_args );
 
   if ( ! $photo_query->have_posts() ) {
     wp_send_json_error(
