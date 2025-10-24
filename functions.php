@@ -84,6 +84,18 @@ function trinity_enqueue_assets() {
     $theme_version,
     true
   );
+
+  wp_localize_script(
+    'trinity-scripts',
+    'TrinityLoadMore',
+    array(
+      'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+      'nonce'   => wp_create_nonce( 'trinity_load_more_photos' ),
+      'strings' => array(
+        'error' => __( 'Impossible de charger plus de photos pour le moment.', 'trinity' ),
+      ),
+    )
+  );
 }
 add_action( 'wp_enqueue_scripts', 'trinity_enqueue_assets' );
 
@@ -227,3 +239,54 @@ function trinity_customize_preview_enqueue_scripts() {
   );
 }
 add_action( 'customize_preview_init', 'trinity_customize_preview_enqueue_scripts' );
+
+/**
+ * Handler AJAX pour charger plus de photos.
+ */
+function trinity_ajax_load_more_photos() {
+  check_ajax_referer( 'trinity_load_more_photos', 'nonce' );
+
+  $page     = isset( $_POST['page'] ) ? max( 1, (int) $_POST['page'] ) : 1;
+  $per_page = isset( $_POST['per_page'] ) ? max( 1, (int) $_POST['per_page'] ) : 8;
+
+  $photo_query = new WP_Query(
+    array(
+      'post_type'      => 'photo',
+      'posts_per_page' => $per_page,
+      'paged'          => $page,
+      'post_status'    => 'publish',
+      'no_found_rows'  => false,
+    )
+  );
+
+  if ( ! $photo_query->have_posts() ) {
+    wp_send_json_error(
+      array(
+        'message' => __( 'Plus de photos disponibles.', 'trinity' ),
+      )
+    );
+  }
+
+  ob_start();
+
+  while ( $photo_query->have_posts() ) {
+    $photo_query->the_post();
+    $photo_post = get_post();
+    get_template_part( 'templates_part/photo-card', null, array( 'photo_post' => $photo_post ) );
+  }
+
+  wp_reset_postdata();
+
+  $html = ob_get_clean();
+
+  wp_send_json_success(
+    array(
+      'html'      => $html,
+      'nextPage'  => $page + 1,
+      'maxPages'  => (int) $photo_query->max_num_pages,
+      'hasMore'   => $page < (int) $photo_query->max_num_pages,
+    )
+  );
+}
+add_action( 'wp_ajax_trinity_load_more_photos', 'trinity_ajax_load_more_photos' );
+add_action( 'wp_ajax_nopriv_trinity_load_more_photos', 'trinity_ajax_load_more_photos' );

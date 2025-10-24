@@ -38,19 +38,28 @@ if ( $header_image_source || $header_title ) {
 }
 
 // Récupère les 8 éléments du type de contenu photo.
-$photo_query = new WP_Query(
-  array(
-    'post_type'      => 'photo',
-    'posts_per_page' => 8,
-    'post_status'    => 'publish',
-    'no_found_rows'  => true,
-  )
+$photo_query_args = array(
+  'post_type'      => 'photo',
+  'posts_per_page' => 8,
+  'post_status'    => 'publish',
+  'no_found_rows'  => false,
 );
 
+$photo_query = new WP_Query( $photo_query_args );
+
 if ( $photo_query->have_posts() ) {
+  $max_pages    = (int) $photo_query->max_num_pages;
+  $per_page     = (int) $photo_query->get( 'posts_per_page' );
+  $current_page = max( 1, (int) $photo_query->get( 'paged' ) );
   ?>
-  <section class="home-photo-grid">
-    <div class="home-photo-grid__inner">
+  <section
+    class="home-photo-grid"
+    data-load-more="true"
+    data-current-page="<?php echo esc_attr( $current_page ); ?>"
+    data-per-page="<?php echo esc_attr( $per_page ); ?>"
+    data-max-pages="<?php echo esc_attr( $max_pages ); ?>"
+  >
+    <div class="home-photo-grid__inner" id="photo-grid">
       <?php
       while ( $photo_query->have_posts() ) {
         $photo_query->the_post();
@@ -59,6 +68,13 @@ if ( $photo_query->have_posts() ) {
       }
       ?>
     </div>
+    <?php if ( $max_pages > $current_page ) { ?>
+      <div class="home-photo-grid__actions">
+        <button type="button" class="home-photo-grid__load-more" id="photo-load-more">
+          <?php esc_html_e( 'Charger plus', 'trinity' ); ?>
+        </button>
+      </div>
+    <?php } ?>
   </section>
   <?php
 }
