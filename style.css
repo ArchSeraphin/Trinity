@@ -138,6 +138,31 @@ p {
   text-transform: uppercase;
 }
 
+.home-hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-color: #111;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+
+.home-hero__title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 0 1rem;
+  color: transparent;
+  -webkit-text-stroke: 2px #fff;
+  text-stroke: 2px #fff;
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 27.59px;
@@ -395,12 +420,7 @@ a:focus {
 }
 
 .site-content {
-  max-width: 960px;
-  margin: 2rem auto;
-  padding: 0 1rem;
   background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 10px 35px rgba(17, 24, 39, 0.08);
 }
 
 .post {
