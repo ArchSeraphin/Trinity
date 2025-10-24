@@ -163,6 +163,35 @@ p {
   text-stroke: 2px #fff;
 }
 
+.home-photo-grid {
+  padding: 4rem 1.5rem;
+}
+
+.home-photo-grid__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.photo-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-card__figure {
+  margin: 0;
+  position: relative;
+}
+
+.photo-card__image {
+  display: block;
+  width: 100%;
+  height: 495px;
+  object-fit: cover;
+}
+
 @media (max-width: 768px) {
   h1 {
     font-size: 27.59px;
@@ -172,6 +201,14 @@ p {
   h2 {
     font-size: 46px;
     line-height: 48px;
+  }
+
+  .home-photo-grid {
+    padding: 3rem 1rem;
+  }
+
+  .home-photo-grid__inner {
+    grid-template-columns: 1fr;
   }
 }
 

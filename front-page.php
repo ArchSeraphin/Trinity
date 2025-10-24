@@ -47,10 +47,6 @@ $photo_query = new WP_Query(
   )
 );
 
-echo '<pre>';
-var_dump( $photo_query->posts );
-echo '</pre>';
-
 if ( $photo_query->have_posts() ) {
   ?>
   <section class="home-photo-grid">
@@ -58,11 +54,8 @@ if ( $photo_query->have_posts() ) {
       <?php
       while ( $photo_query->have_posts() ) {
         $photo_query->the_post();
-        ?>
-        <article class="home-photo-grid__item">
-          <h3 class="home-photo-grid__title"><?php the_title(); ?></h3>
-        </article>
-        <?php
+        $photo_post = get_post();
+        get_template_part( 'templates_part/photo-card', null, array( 'photo_post' => $photo_post ) );
       }
       ?>
     </div>
