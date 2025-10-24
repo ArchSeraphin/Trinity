@@ -24,6 +24,7 @@
     <?php endif; ?>
     <span class="site-footer__note"><?php esc_html_e( 'Tous droits réservés.', 'trinity' ); ?></span>
   </footer>
+  <?php get_template_part( 'templates_part/contact-modal' ); ?>
   <?php wp_footer(); ?>
 </body>
 </html>

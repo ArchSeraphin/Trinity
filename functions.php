@@ -83,6 +83,14 @@ function trinity_enqueue_assets() {
     $theme_version,
     true
   );
+
+  wp_enqueue_script(
+    'trinity-scripts',
+    get_template_directory_uri() . '/assets/js/scripts.js',
+    array(),
+    $theme_version,
+    true
+  );
 }
 add_action( 'wp_enqueue_scripts', 'trinity_enqueue_assets' );
 
