@@ -103,3 +103,126 @@ function trinity_widgets_init() {
   );
 }
 add_action( 'widgets_init', 'trinity_widgets_init' );
+
+/**
+ * Ajoute un réglage Customizer pour ajuster la hauteur du logo.
+ *
+ * @param WP_Customize_Manager $wp_customize Gestionnaire du customizer.
+ */
+function trinity_customize_register( $wp_customize ) {
+  $wp_customize->add_setting(
+    'trinity_logo_max_height',
+    array(
+      'default'           => 48,
+      'sanitize_callback' => 'trinity_sanitize_logo_height',
+      'transport'         => 'postMessage',
+    )
+  );
+
+  $wp_customize->add_control(
+    'trinity_logo_max_height',
+    array(
+      'label'       => __( 'Hauteur maximale du logo (px)', 'trinity' ),
+      'section'     => 'title_tagline',
+      'type'        => 'range',
+      'input_attrs' => array(
+        'min'  => 10,
+        'max'  => 200,
+        'step' => 2,
+      ),
+    )
+  );
+
+  $wp_customize->add_setting(
+    'display_title_and_tagline',
+    array(
+      'default'           => true,
+      'sanitize_callback' => 'trinity_sanitize_checkbox',
+      'transport'         => 'postMessage',
+    )
+  );
+
+  $wp_customize->add_control(
+    'display_title_and_tagline',
+    array(
+      'label'   => __( 'Afficher le titre et le slogan du site', 'trinity' ),
+      'section' => 'title_tagline',
+      'type'    => 'checkbox',
+    )
+  );
+}
+add_action( 'customize_register', 'trinity_customize_register' );
+
+/**
+ * Valide la hauteur du logo saisie dans le Customizer.
+ *
+ * @param mixed $value Valeur à valider.
+ * @return int Hauteur positive.
+ */
+function trinity_sanitize_logo_height( $value ) {
+  $value = absint( $value );
+
+  if ( 0 === $value ) {
+    return 48;
+  }
+
+  return max( 10, min( 200, $value ) );
+}
+
+/**
+ * Sanitize pour les cases à cocher Customizer.
+ *
+ * @param mixed $checked Valeur du champ.
+ * @return bool
+ */
+function trinity_sanitize_checkbox( $checked ) {
+  return (bool) $checked;
+}
+
+/**
+ * Applique les styles personnalisés du logo.
+ */
+function trinity_enqueue_custom_logo_style() {
+  $max_height = get_theme_mod( 'trinity_logo_max_height', 48 );
+  $max_height = trinity_sanitize_logo_height( $max_height );
+
+  if ( ! $max_height ) {
+    return;
+  }
+
+  $custom_css = sprintf(
+    '.site-logo img { height: %1$dpx; width: auto; max-height: none; }',
+    $max_height
+  );
+
+  wp_add_inline_style( 'trinity-style', $custom_css );
+}
+add_action( 'wp_enqueue_scripts', 'trinity_enqueue_custom_logo_style', 20 );
+
+/**
+ * Enfile les scripts Customizer côté panneau.
+ */
+function trinity_customize_controls_enqueue_scripts() {
+  wp_enqueue_script(
+    'trinity-customize-controls',
+    get_template_directory_uri() . '/assets/js/customize-controls.js',
+    array( 'customize-controls', 'jquery' ),
+    wp_get_theme()->get( 'Version' ),
+    true
+  );
+}
+add_action( 'customize_controls_enqueue_scripts', 'trinity_customize_controls_enqueue_scripts' );
+
+/**
+ * Enfile les scripts Customizer côté prévisualisation.
+ */
+function trinity_customize_preview_enqueue_scripts() {
+  wp_enqueue_script(
+    'trinity-customize-preview',
+    get_template_directory_uri() . '/assets/js/customize-preview.js',
+    array( 'customize-preview' ),
+    wp_get_theme()->get( 'Version' ),
+    true
+  );
+}
+add_action( 'customize_preview_init', 'trinity_customize_preview_enqueue_scripts' );

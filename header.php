@@ -16,24 +16,27 @@
   <?php wp_body_open(); ?>
   <header class="site-header">
     <div class="site-header__inner">
+      <?php $display_title_and_tagline = get_theme_mod( 'display_title_and_tagline', true ); ?>
       <div class="site-branding">
         <?php if ( has_custom_logo() ) : ?>
           <div class="site-logo"><?php the_custom_logo(); ?></div>
         <?php endif; ?>
-        <div class="site-title-wrapper">
-          <?php if ( is_front_page() && is_home() ) : ?>
-            <h1 class="site-title">
-              <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
-            </h1>
-          <?php else : ?>
-            <p class="site-title">
-              <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
-            </p>
-          <?php endif; ?>
-          <?php if ( get_bloginfo( 'description' ) ) : ?>
-            <p class="site-description"><?php bloginfo( 'description' ); ?></p>
-          <?php endif; ?>
-        </div>
+        <?php if ( $display_title_and_tagline ) : ?>
+          <div class="site-title-wrapper">
+            <?php if ( is_front_page() && is_home() ) : ?>
+              <h1 class="site-title">
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
+              </h1>
+            <?php else : ?>
+              <p class="site-title">
+                <a href="<?php echo esc_url( home_url( '/' ) ); ?>"><?php bloginfo( 'name' ); ?></a>
+              </p>
+            <?php endif; ?>
+            <?php if ( get_bloginfo( 'description' ) ) : ?>
+              <p class="site-description"><?php bloginfo( 'description' ); ?></p>
+            <?php endif; ?>
+          </div>
+        <?php endif; ?>
       </div>
 
       <?php if ( has_nav_menu( 'primary' ) ) : ?>
