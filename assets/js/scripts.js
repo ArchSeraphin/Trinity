@@ -1,4 +1,6 @@
 ( function() {
+  var lightboxApi = null;
+
   var initContactModal = function() {
     var modal = document.getElementById( 'contact-modal' );
 
@@ -131,6 +133,205 @@
     }
   };
 
+  var initPhotoLightbox = function() {
+    var container = document.getElementById( 'photo-lightbox' );
+
+    if ( ! container ) {
+      return null;
+    }
+
+    var body = document.body || document.documentElement;
+    var imageElement = container.querySelector( '[data-lightbox-image]' );
+    var referenceElement = container.querySelector( '[data-lightbox-reference]' );
+    var categoryElement = container.querySelector( '[data-lightbox-category]' );
+    var closeElements = container.querySelectorAll( '[data-lightbox-close]' );
+    var prevButton = container.querySelector( '[data-lightbox-prev]' );
+    var nextButton = container.querySelector( '[data-lightbox-next]' );
+
+    var items = [];
+    var currentIndex = -1;
+
+    var collectItems = function() {
+      items = Array.prototype.slice.call( document.querySelectorAll( '.photo-card' ) );
+      items.forEach( function( card, index ) {
+        card.dataset.photoIndex = index;
+      } );
+    };
+
+    var updateMeta = function( value, element ) {
+      if ( ! element ) {
+        return;
+      }
+
+      if ( value ) {
+        element.textContent = value;
+        element.classList.remove( 'is-empty' );
+      } else {
+        element.textContent = '';
+        element.classList.add( 'is-empty' );
+      }
+    };
+
+    var updateNavState = function() {
+      var atStart = currentIndex <= 0;
+      var atEnd = currentIndex >= items.length - 1;
+
+      if ( prevButton ) {
+        prevButton.disabled = atStart;
+        prevButton.classList.toggle( 'is-disabled', atStart );
+      }
+
+      if ( nextButton ) {
+        nextButton.disabled = atEnd;
+        nextButton.classList.toggle( 'is-disabled', atEnd );
+      }
+    };
+
+    var setIndex = function( index ) {
+      if ( index < 0 || index >= items.length ) {
+        return;
+      }
+
+      currentIndex = index;
+      var card = items[ currentIndex ];
+
+      if ( ! card ) {
+        return;
+      }
+
+      var data = card.dataset || {};
+
+      if ( imageElement ) {
+        if ( data.photoImage ) {
+          imageElement.src = data.photoImage;
+        }
+
+        imageElement.alt = data.photoTitle || '';
+      }
+
+      updateMeta( data.photoReference, referenceElement );
+      updateMeta( data.photoCategory, categoryElement );
+      updateNavState();
+    };
+
+    var handleKeydown = function( event ) {
+      if ( event.key === 'Escape' ) {
+        close();
+      } else if ( event.key === 'ArrowLeft' ) {
+        event.preventDefault();
+        goPrevious();
+      } else if ( event.key === 'ArrowRight' ) {
+        event.preventDefault();
+        goNext();
+      }
+    };
+
+    var openFromCard = function( card ) {
+      if ( ! card ) {
+        return;
+      }
+
+      collectItems();
+
+      var index = items.indexOf( card );
+
+      if ( index === -1 ) {
+        return;
+      }
+
+      container.classList.add( 'is-open' );
+      container.setAttribute( 'aria-hidden', 'false' );
+      if ( body ) {
+        body.classList.add( 'photo-lightbox-open' );
+      }
+
+      setIndex( index );
+      document.addEventListener( 'keydown', handleKeydown );
+    };
+
+    var close = function() {
+      if ( ! container.classList.contains( 'is-open' ) ) {
+        return;
+      }
+
+      container.classList.remove( 'is-open' );
+      container.setAttribute( 'aria-hidden', 'true' );
+
+      if ( body ) {
+        body.classList.remove( 'photo-lightbox-open' );
+      }
+
+      document.removeEventListener( 'keydown', handleKeydown );
+      currentIndex = -1;
+    };
+
+    var goPrevious = function() {
+      if ( currentIndex <= 0 ) {
+        return;
+      }
+
+      setIndex( currentIndex - 1 );
+    };
+
+    var goNext = function() {
+      if ( currentIndex >= items.length - 1 ) {
+        return;
+      }
+
+      setIndex( currentIndex + 1 );
+    };
+
+    closeElements.forEach( function( element ) {
+      element.addEventListener( 'click', function( event ) {
+        event.preventDefault();
+        close();
+      } );
+    } );
+
+    if ( prevButton ) {
+      prevButton.addEventListener( 'click', function( event ) {
+        event.preventDefault();
+        goPrevious();
+      } );
+    }
+
+    if ( nextButton ) {
+      nextButton.addEventListener( 'click', function( event ) {
+        event.preventDefault();
+        goNext();
+      } );
+    }
+
+    container.addEventListener( 'click', function( event ) {
+      if ( event.target === container ) {
+        close();
+      }
+    } );
+
+    document.addEventListener( 'click', function( event ) {
+      var trigger = event.target.closest( '[data-lightbox-trigger]' );
+
+      if ( ! trigger ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      var card = trigger.closest( '.photo-card' );
+
+      if ( card ) {
+        openFromCard( card );
+      }
+    } );
+
+    collectItems();
+
+    return {
+      refresh: collectItems,
+      close: close,
+    };
+  };
+
   var initPhotoLoadMore = function() {
     var section = document.querySelector( '.home-photo-grid[data-load-more="true"]' );
 
@@ -194,6 +395,9 @@
       if ( button ) {
         button.classList.remove( 'is-hidden' );
         button.removeAttribute( 'hidden' );
+      }
+      if ( lightboxApi && typeof lightboxApi.refresh === 'function' ) {
+        lightboxApi.refresh();
       }
     };
 
@@ -281,6 +485,10 @@
           }
 
           updateButtonVisibility();
+
+          if ( lightboxApi && typeof lightboxApi.refresh === 'function' ) {
+            lightboxApi.refresh();
+          }
         } )
         .catch( function( error ) {
           var text = TrinityLoadMore.strings && TrinityLoadMore.strings.error ? TrinityLoadMore.strings.error : 'Error';
@@ -422,11 +630,11 @@
           } );
         }
 
-        options.forEach( function( option ) {
-          option.addEventListener( 'click', function( event ) {
-            event.preventDefault();
-            applySelection( option );
-          } );
+          options.forEach( function( option ) {
+            option.addEventListener( 'click', function( event ) {
+              event.preventDefault();
+              applySelection( option );
+            } );
 
           option.addEventListener( 'keydown', function( event ) {
             if ( event.key === 'Enter' || event.key === ' ' ) {
@@ -455,6 +663,7 @@
 
   var onReady = function() {
     initContactModal();
+    lightboxApi = initPhotoLightbox();
     initPhotoLoadMore();
   };
 

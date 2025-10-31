@@ -203,4 +203,6 @@ if ( $photo_query->have_posts() ) {
 
 wp_reset_postdata();
 
+get_template_part( 'templates_part/photo-lightbox' );
+
 get_footer();
