@@ -47,6 +47,38 @@ $photo_query_args = array(
 
 $photo_query = new WP_Query( $photo_query_args );
 
+$category_terms = array();
+if ( taxonomy_exists( 'categorie' ) ) {
+  $category_terms = get_terms(
+    array(
+      'taxonomy'   => 'categorie',
+      'hide_empty' => false,
+      'orderby'    => 'name',
+      'order'      => 'ASC',
+    )
+  );
+
+  if ( is_wp_error( $category_terms ) ) {
+    $category_terms = array();
+  }
+}
+
+$format_terms = array();
+if ( taxonomy_exists( 'format' ) ) {
+  $format_terms = get_terms(
+    array(
+      'taxonomy'   => 'format',
+      'hide_empty' => false,
+      'orderby'    => 'name',
+      'order'      => 'ASC',
+    )
+  );
+
+  if ( is_wp_error( $format_terms ) ) {
+    $format_terms = array();
+  }
+}
+
 if ( $photo_query->have_posts() ) {
   $max_pages    = (int) $photo_query->max_num_pages;
   $per_page     = (int) $photo_query->get( 'posts_per_page' );
@@ -76,10 +108,19 @@ if ( $photo_query->have_posts() ) {
           <div class="photo-filter__menu-wrapper">
             <ul class="photo-filter__menu" id="filter-category-menu" role="listbox">
               <li class="photo-filter__option is-selected" role="option" aria-selected="true" data-value="" tabindex="0"><?php esc_html_e( 'Catégories', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="reception" tabindex="0"><?php esc_html_e( 'Réception', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="mariage" tabindex="0"><?php esc_html_e( 'Mariage', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="concert" tabindex="0"><?php esc_html_e( 'Concert', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="television" tabindex="0"><?php esc_html_e( 'Télévision', 'trinity' ); ?></li>
+              <?php if ( ! empty( $category_terms ) ) : ?>
+                <?php foreach ( $category_terms as $term ) : ?>
+                  <li
+                    class="photo-filter__option"
+                    role="option"
+                    aria-selected="false"
+                    data-value="<?php echo esc_attr( $term->slug ); ?>"
+                    tabindex="0"
+                  >
+                    <?php echo esc_html( $term->name ); ?>
+                  </li>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </ul>
           </div>
         </div>
@@ -99,8 +140,19 @@ if ( $photo_query->have_posts() ) {
           <div class="photo-filter__menu-wrapper">
             <ul class="photo-filter__menu" id="filter-format-menu" role="listbox">
               <li class="photo-filter__option is-selected" role="option" aria-selected="true" data-value="" tabindex="0"><?php esc_html_e( 'Formats', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="paysage" tabindex="0"><?php esc_html_e( 'Paysage', 'trinity' ); ?></li>
-              <li class="photo-filter__option" role="option" aria-selected="false" data-value="portrait" tabindex="0"><?php esc_html_e( 'Portrait', 'trinity' ); ?></li>
+              <?php if ( ! empty( $format_terms ) ) : ?>
+                <?php foreach ( $format_terms as $term ) : ?>
+                  <li
+                    class="photo-filter__option"
+                    role="option"
+                    aria-selected="false"
+                    data-value="<?php echo esc_attr( $term->slug ); ?>"
+                    tabindex="0"
+                  >
+                    <?php echo esc_html( $term->name ); ?>
+                  </li>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </ul>
           </div>
         </div>
