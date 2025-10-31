@@ -43,6 +43,10 @@ $photo_query_args = array(
   'posts_per_page' => 8,
   'post_status'    => 'publish',
   'no_found_rows'  => false,
+  'orderby'        => 'meta_value',
+  'meta_key'       => 'date',
+  'meta_type'      => 'DATE',
+  'order'          => 'DESC',
 );
 
 $photo_query = new WP_Query( $photo_query_args );

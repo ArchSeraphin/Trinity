@@ -455,6 +455,19 @@
       formData.append( 'category', options && options.category ? options.category : currentFilters.category );
       formData.append( 'format', options && options.format ? options.format : currentFilters.format );
       formData.append( 'order', options && options.order ? options.order : currentFilters.order );
+      var loadedCards = document.querySelectorAll( '.photo-card[data-photo-id]' );
+      if ( loadedCards.length ) {
+        var excludeIds = [];
+        loadedCards.forEach( function( card ) {
+          var id = card.getAttribute( 'data-photo-id' );
+          if ( id && excludeIds.indexOf( id ) === -1 ) {
+            excludeIds.push( id );
+          }
+        } );
+        if ( excludeIds.length ) {
+          formData.append( 'exclude', excludeIds.join( ',' ) );
+        }
+      }
 
       fetch( TrinityLoadMore.ajaxUrl, {
         method: 'POST',
@@ -472,19 +485,38 @@
             throw new Error( data && data.data && data.data.message ? data.data.message : 'unknown_error' );
           }
 
-          if ( data.data && data.data.html ) {
-            grid.insertAdjacentHTML( 'beforeend', data.data.html );
+          var payload = data.data || {};
+
+          if ( payload.html ) {
+            grid.insertAdjacentHTML( 'beforeend', payload.html );
           }
 
-          currentPage = nextPage;
+          currentPage += 1;
           section.setAttribute( 'data-current-page', String( currentPage ) );
 
-          if ( data.data && typeof data.data.maxPages !== 'undefined' ) {
-            maxPages = parseInt( data.data.maxPages, 10 ) || maxPages;
-            section.setAttribute( 'data-max-pages', String( maxPages ) );
+          if ( typeof payload.maxPages !== 'undefined' ) {
+            var parsedMax = parseInt( payload.maxPages, 10 );
+            if ( ! Number.isNaN( parsedMax ) && parsedMax >= currentPage ) {
+              maxPages = parsedMax;
+            }
+          } else if ( payload.hasMore === false ) {
+            maxPages = currentPage;
+          } else if ( maxPages < currentPage + 1 ) {
+            maxPages = currentPage + 1;
           }
 
+          if ( payload.hasMore === false ) {
+            maxPages = currentPage;
+          }
+
+          section.setAttribute( 'data-max-pages', String( maxPages ) );
+
           updateButtonVisibility();
+
+          if ( payload.hasMore === false && button ) {
+            button.classList.add( 'is-hidden' );
+            button.setAttribute( 'hidden', 'hidden' );
+          }
 
           if ( lightboxApi && typeof lightboxApi.refresh === 'function' ) {
             lightboxApi.refresh();

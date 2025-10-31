@@ -251,6 +251,16 @@ function trinity_ajax_load_more_photos() {
   $category  = isset( $_POST['category'] ) ? sanitize_text_field( wp_unslash( $_POST['category'] ) ) : '';
   $format    = isset( $_POST['format'] ) ? sanitize_text_field( wp_unslash( $_POST['format'] ) ) : '';
   $order_dir = isset( $_POST['order'] ) ? strtolower( sanitize_text_field( wp_unslash( $_POST['order'] ) ) ) : 'desc';
+  $exclude   = isset( $_POST['exclude'] ) ? sanitize_text_field( wp_unslash( $_POST['exclude'] ) ) : '';
+  $exclude_ids = array();
+
+  if ( $exclude ) {
+    $exclude_parts = array_unique( array_filter( array_map( 'trim', explode( ',', $exclude ) ) ) );
+    foreach ( $exclude_parts as $part ) {
+      $exclude_ids[] = (int) $part;
+    }
+    $exclude_ids = array_filter( $exclude_ids );
+  }
 
   $tax_query = array();
 
@@ -282,11 +292,18 @@ function trinity_ajax_load_more_photos() {
     'no_found_rows'  => false,
     'orderby'        => 'meta_value',
     'meta_key'       => 'date',
+    'meta_type'      => 'DATE',
     'order'          => ( 'asc' === $order_dir ) ? 'ASC' : 'DESC',
   );
 
   if ( ! empty( $tax_query ) ) {
     $query_args['tax_query'] = $tax_query;
+  }
+
+  if ( ! empty( $exclude_ids ) ) {
+    $query_args['post__not_in'] = $exclude_ids;
+    $query_args['paged']        = 1;
+    $query_args['offset']       = 0;
   }
 
   $photo_query = new WP_Query( $query_args );
@@ -311,12 +328,17 @@ function trinity_ajax_load_more_photos() {
 
   $html = ob_get_clean();
 
+  $retrieved_count = (int) $photo_query->post_count;
+  $total_found     = (int) $photo_query->found_posts;
+  $remaining_posts = max( 0, $total_found - $retrieved_count );
+  $has_more        = $remaining_posts > 0;
+
   wp_send_json_success(
     array(
       'html'      => $html,
       'nextPage'  => $page + 1,
       'maxPages'  => (int) $photo_query->max_num_pages,
-      'hasMore'   => $page < (int) $photo_query->max_num_pages,
+      'hasMore'   => $has_more,
     )
   );
 }
