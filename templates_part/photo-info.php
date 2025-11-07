@@ -33,11 +33,19 @@ if ( ! $photo_year ) {
   $photo_year = get_the_date( 'Y', $photo_id );
 }
 
-$navigation   = trinity_get_photo_navigation( $photo_id );
-$prev_photo   = isset( $navigation['prev'] ) ? $navigation['prev'] : null;
-$next_photo   = isset( $navigation['next'] ) ? $navigation['next'] : null;
-$has_navigation = $prev_photo || $next_photo;
-$related_photos = trinity_get_related_photos( $photo_id, 2 );
+$navigation      = trinity_get_photo_navigation( $photo_id );
+$prev_photo      = isset( $navigation['prev'] ) ? $navigation['prev'] : null;
+$next_photo      = isset( $navigation['next'] ) ? $navigation['next'] : null;
+$has_navigation  = $prev_photo || $next_photo;
+$related_photos  = trinity_get_related_photos( $photo_id, 2 );
+$contact_query_key = trinity_get_contact_reference_query_key();
+$contact_link    = get_permalink( $photo_id );
+
+if ( $photo_reference ) {
+  $contact_link = add_query_arg( $contact_query_key, $photo_reference, $contact_link );
+}
+
+$contact_link .= '#contact-modal';
 ?>
 
 <section class="photo-info" data-photo-id="<?php echo esc_attr( $photo_id ); ?>">
@@ -97,17 +105,16 @@ $related_photos = trinity_get_related_photos( $photo_id, 2 );
   <div class="photo-info__cta-nav">
     <div class="photo-info__cta">
       <p class="photo-info__cta-text"><?php esc_html_e( 'Cette photo vous intéresse ?', 'trinity' ); ?></p>
-      <button
-        type="button"
+      <a
         class="photo-info__contact-button"
-        data-contact-modal-open
+        href="<?php echo esc_url( $contact_link ); ?>"
         <?php if ( $photo_reference ) : ?>
-          data-contact-ref="<?php echo esc_attr( $photo_reference ); ?>"
+          data-photo-reference="<?php echo esc_attr( $photo_reference ); ?>"
         <?php endif; ?>
-        data-contact-title="<?php echo esc_attr( $photo_title ); ?>"
+        data-photo-title="<?php echo esc_attr( $photo_title ); ?>"
       >
         <?php esc_html_e( 'Contact', 'trinity' ); ?>
-      </button>
+      </a>
     </div>
 
     <?php if ( $has_navigation ) : ?>

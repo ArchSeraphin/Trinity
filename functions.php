@@ -625,3 +625,31 @@ if ( ! function_exists( 'trinity_get_related_photos' ) ) {
     return get_posts( $args );
   }
 }
+
+if ( ! function_exists( 'trinity_get_contact_reference_query_key' ) ) {
+  /**
+   * Clé de requête utilisée pour préremplir la référence photo dans le formulaire.
+   *
+   * @return string
+   */
+  function trinity_get_contact_reference_query_key() {
+    return apply_filters( 'trinity_contact_reference_query_key', 'photo_reference' );
+  }
+}
+
+if ( ! function_exists( 'trinity_get_contact_reference_from_request' ) ) {
+  /**
+   * Récupère la référence photo transmise via la requête.
+   *
+   * @return string
+   */
+  function trinity_get_contact_reference_from_request() {
+    $key = trinity_get_contact_reference_query_key();
+
+    if ( isset( $_GET[ $key ] ) ) {
+      return sanitize_text_field( wp_unslash( $_GET[ $key ] ) );
+    }
+
+    return '';
+  }
+}

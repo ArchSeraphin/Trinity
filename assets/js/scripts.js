@@ -14,6 +14,8 @@
     var lastFocusedElement = null;
     var currentReference = '';
     var currentTitle = '';
+    var contactQueryKey = modal.getAttribute( 'data-contact-query-key' ) || '';
+    var contactQueryValue = modal.getAttribute( 'data-contact-query-value' ) || '';
 
     var collectTriggers = function() {
       var selectors = [ '[data-contact-modal-open]', '.js-contact-modal', '[href="#contact-modal"]', '#contact-modal-trigger' ];
@@ -30,6 +32,28 @@
       } );
 
       return nodes;
+    };
+
+    var getQueryParam = function( key ) {
+      if ( ! key ) {
+        return '';
+      }
+
+      if ( typeof URLSearchParams !== 'undefined' ) {
+        var params = new URLSearchParams( window.location.search );
+        return params.get( key ) || '';
+      }
+
+      var query = window.location.search.replace( '?', '' ).split( '&' );
+
+      for ( var i = 0; i < query.length; i++ ) {
+        var parts = query[ i ].split( '=' );
+        if ( parts[0] === key ) {
+          return decodeURIComponent( parts[1] || '' );
+        }
+      }
+
+      return '';
     };
 
     var getFocusableElements = function() {
@@ -187,6 +211,14 @@
       body.classList.remove( 'contact-modal-open' );
       document.removeEventListener( 'keydown', handleKeydown );
 
+      if ( window.location.hash === '#contact-modal' ) {
+        if ( window.history && typeof window.history.replaceState === 'function' ) {
+          window.history.replaceState( '', document.title, window.location.pathname + window.location.search );
+        } else {
+          window.location.hash = '';
+        }
+      }
+
       if ( lastFocusedElement && typeof lastFocusedElement.focus === 'function' ) {
         lastFocusedElement.focus();
       }
@@ -222,6 +254,16 @@
     }
 
     setReferenceData( '', '' );
+
+    var initialReference = contactQueryValue || getQueryParam( contactQueryKey );
+
+    if ( initialReference ) {
+      setReferenceData( initialReference, '' );
+    }
+
+    if ( window.location.hash === '#contact-modal' ) {
+      openModal();
+    }
   };
 
   var initPhotoLightbox = function() {
