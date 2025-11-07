@@ -645,6 +645,7 @@ body.photo-lightbox-open {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  padding-top: 5%;
 }
 
 .photo-info__layout {
@@ -955,6 +956,7 @@ a:focus {
   padding: 0 2rem;
   background-color: #fff;
   color: #111827;
+  box-shadow: 0 4px 14px 10px #00000008;
 }
 
 .site-header__inner {
