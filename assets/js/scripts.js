@@ -229,6 +229,18 @@
         event.preventDefault();
         var reference = trigger.getAttribute( 'data-contact-ref' ) || trigger.getAttribute( 'data-photo-reference' ) || '';
         var title = trigger.getAttribute( 'data-contact-title' ) || trigger.getAttribute( 'data-photo-title' ) || '';
+        var href = trigger.getAttribute( 'href' );
+
+        if ( contactQueryKey && reference ) {
+          var currentQueryValue = getQueryParam( contactQueryKey );
+          var needsReload = currentQueryValue !== reference;
+
+          if ( needsReload && href ) {
+            window.location.href = href;
+            return;
+          }
+        }
+
         setReferenceData( reference, title );
         openModal();
       } );

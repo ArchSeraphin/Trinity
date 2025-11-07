@@ -108,6 +108,7 @@ $contact_link .= '#contact-modal';
       <a
         class="photo-info__contact-button"
         href="<?php echo esc_url( $contact_link ); ?>"
+        data-contact-modal-open
         <?php if ( $photo_reference ) : ?>
           data-photo-reference="<?php echo esc_attr( $photo_reference ); ?>"
         <?php endif; ?>
