@@ -12,6 +12,8 @@
     var dialog = modal.querySelector( '.contact-modal__dialog' );
     var closeButtons = modal.querySelectorAll( '[data-contact-modal-close]' );
     var lastFocusedElement = null;
+    var currentReference = '';
+    var currentTitle = '';
 
     var collectTriggers = function() {
       var selectors = [ '[data-contact-modal-open]', '.js-contact-modal', '[href="#contact-modal"]', '#contact-modal-trigger' ];
@@ -35,6 +37,89 @@
         'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), ' +
         'select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
       ) : [];
+    };
+
+    var findReferenceInput = function() {
+      var scope = modal.querySelector( '.contact-modal__content' ) || modal;
+
+      if ( ! scope ) {
+        return null;
+      }
+
+      var form = scope.querySelector( 'form' ) || scope;
+      var selectors = [
+        '[data-contact-reference-input]',
+        'input[name*="ref"]',
+        'input[name*="reference"]',
+        'input[aria-label*="réf" i]',
+        'input[placeholder*="réf" i]',
+      ];
+
+      for ( var i = 0; i < selectors.length; i++ ) {
+        var input = form.querySelector( selectors[ i ] );
+
+        if ( input ) {
+          return input;
+        }
+      }
+
+      return null;
+    };
+
+    var dispatchNativeEvents = function( element ) {
+      if ( ! element ) {
+        return;
+      }
+
+      try {
+        if ( typeof Event === 'function' ) {
+          element.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+          element.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+          return;
+        }
+      } catch ( error ) {
+        // Continue vers le fallback legacy.
+      }
+
+      if ( document.createEvent ) {
+        var inputEvent = document.createEvent( 'Event' );
+        inputEvent.initEvent( 'input', true, true );
+        element.dispatchEvent( inputEvent );
+
+        var changeEvent = document.createEvent( 'Event' );
+        changeEvent.initEvent( 'change', true, true );
+        element.dispatchEvent( changeEvent );
+      }
+    };
+
+    var applyReferencePrefill = function() {
+      var target = findReferenceInput();
+
+      if ( ! target ) {
+        return;
+      }
+
+      target.value = currentReference || '';
+      dispatchNativeEvents( target );
+    };
+
+    var setReferenceData = function( reference, title ) {
+      currentReference = reference || '';
+      currentTitle = title || '';
+
+      if ( currentReference ) {
+        modal.setAttribute( 'data-photo-reference', currentReference );
+      } else {
+        modal.removeAttribute( 'data-photo-reference' );
+      }
+
+      if ( currentTitle ) {
+        modal.setAttribute( 'data-photo-title', currentTitle );
+      } else {
+        modal.removeAttribute( 'data-photo-title' );
+      }
+
+      applyReferencePrefill();
     };
 
     var trapFocus = function( event ) {
@@ -88,6 +173,7 @@
         dialog.focus();
       }
 
+      applyReferencePrefill();
       document.addEventListener( 'keydown', handleKeydown );
     };
 
@@ -109,6 +195,9 @@
     collectTriggers().forEach( function( trigger ) {
       trigger.addEventListener( 'click', function( event ) {
         event.preventDefault();
+        var reference = trigger.getAttribute( 'data-contact-ref' ) || trigger.getAttribute( 'data-photo-reference' ) || '';
+        var title = trigger.getAttribute( 'data-contact-title' ) || trigger.getAttribute( 'data-photo-title' ) || '';
+        setReferenceData( reference, title );
         openModal();
       } );
     } );
@@ -131,6 +220,8 @@
         event.stopPropagation();
       } );
     }
+
+    setReferenceData( '', '' );
   };
 
   var initPhotoLightbox = function() {
