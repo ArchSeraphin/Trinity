@@ -160,7 +160,6 @@ p {
   padding: 0 1rem;
   color: transparent;
   -webkit-text-stroke: 2px #fff;
-  text-stroke: 2px #fff;
 }
 
 .home-photo-grid {
@@ -928,10 +927,6 @@ body.photo-lightbox-open {
 
   .photo-info {
     padding: 3rem 1.5rem;
-  }
-
-  .photo-info__meta-item {
-    /*grid-template-columns: 1fr;*/
   }
 
   .photo-info__cta {
