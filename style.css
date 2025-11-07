@@ -214,7 +214,7 @@ p {
   letter-spacing: 0.07em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .photo-filter__toggle:hover {
@@ -223,13 +223,12 @@ p {
 
 .photo-filter__toggle:focus-visible {
   outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  border-color: #215AFF;
 }
 
 .photo-filter.is-open .photo-filter__toggle {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  border-color: #215AFF;
+  border-radius: 12px 12px 0 0;
 }
 
 .photo-filter__text {
@@ -253,10 +252,10 @@ p {
 .photo-filter__menu-wrapper {
   position: absolute;
   inset-inline: 0;
-  top: calc(100% + 0.5rem);
+  top: 46px;
   background-color: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 14px;
+  /*border: 1px solid #d1d5db;*/
+  border-radius: 0 0 14px 14px;
   box-shadow: 0 25px 45px rgba(17, 24, 39, 0.15);
   opacity: 0;
   visibility: hidden;
