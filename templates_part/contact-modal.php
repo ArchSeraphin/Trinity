@@ -16,7 +16,10 @@
   <div class="contact-modal__overlay" data-contact-modal-close></div>
   <div class="contact-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="contact-modal-title" tabindex="-1">
     <div class="contact-modal__header">
-      <h2 id="contact-modal-title" class="contact-modal__title">CONTACTCONTACTCONTACT<br/>CONTACTCONTACTCONTACT</h2>
+      <h2 id="contact-modal-title" class="contact-modal__title">
+        <span>CONTACTCONTACTCONTACT</span>
+        <span>CONTACTCONTACTCONTACT</span>
+      </h2>
     </div>
     <div class="contact-modal__content">
       <?php

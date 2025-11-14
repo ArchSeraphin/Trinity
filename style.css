@@ -1355,30 +1355,50 @@ a:focus {
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
   background-color: #fff;
-  padding: 2.5rem 2rem 2rem;
   box-shadow: 0 40px 60px rgba(17, 24, 39, 0.35);
 }
 
 .contact-modal__header {
   position: relative;
-  overflow: hidden;
   margin-bottom: 2rem;
+  overflow: hidden;
 }
 
 .contact-modal__title {
+  position: relative;
   margin: 0;
   font-family: 'Space Mono', 'Courier New', Courier, monospace;
-  font-size: clamp(2.75rem, 8vw, 4rem);
-  letter-spacing: 0.25em;
+  font-size: clamp(3rem, 10vw, 4.75rem);
   text-transform: uppercase;
-  transform: translateY(-25%);
+  line-height: 1;
   color: #111827;
   white-space: nowrap;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-indent: -5%;
+}
+
+.contact-modal__title span {
+  display: block;
+  transform: translateX(0);
+}
+
+.contact-modal__title span + span {
+  transform: translateX(-12%);
+}
+
+.contact-modal__title::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
 }
 
 .contact-modal__content {
   font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
   color: #111827;
+  padding: 1em 10em 1em 10em;
 }
 
 body.contact-modal-open {
@@ -1390,11 +1410,13 @@ body.contact-modal-open {
     padding: 1rem;
   }
 
-  .contact-modal__dialog {
-    padding: 2rem 1.5rem 1.5rem;
+  .contact-modal__title {
+    font-size: clamp(2.5rem, 14vw, 3.5rem);
   }
 
-  .contact-modal__title {
-    font-size: clamp(2.5rem, 12vw, 3.2rem);
+  .contact-modal__content {
+    padding: 1em 5em 1em 5em;
   }
 }
+
+
