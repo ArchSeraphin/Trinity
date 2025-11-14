@@ -69,6 +69,10 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
   src: url('/wp-content/uploads/fonts/space-mono/SpaceMono-BoldItalic.woff2') format('woff2');
 }
 
+/* ==========================================================================
+   Fondations globales
+   ========================================================================== */
+
 /* Reset simple pour la typographie du thème */
 html {
   box-sizing: border-box;
@@ -505,6 +509,10 @@ body.photo-lightbox-open {
   color: #b91c1c;
 }
 
+/* ==========================================================================
+   Cartes photo (grille catalogue + suggestions)
+   ========================================================================== */
+
 .photo-card {
   position: relative;
   overflow: hidden;
@@ -647,6 +655,10 @@ body.photo-lightbox-open {
   margin: 0;
 }
 
+/* ==========================================================================
+   Page info photo : moitié texte / moitié visuel
+   ========================================================================== */
+
 .photo-info {
   width: 100%;
   max-width: 1200px;
@@ -724,6 +736,7 @@ body.photo-lightbox-open {
   max-height: 90vh;
 }
 
+/* Barre CTA + navigation sous la fiche */
 .photo-info__cta-nav {
   display: flex;
   justify-content: space-between;
@@ -846,6 +859,7 @@ body.photo-lightbox-open {
   margin-bottom: 5%;
 }
 
+/* Bloc tactile : je supprime le hover pour laisser le tap direct */
 @media (hover: none) and (pointer: coarse) {
   .photo-card__image {
     transform: none !important;
@@ -1317,7 +1331,7 @@ a:focus {
 }
 
 /**
- * Contact modal
+ * Modale de contact : je veux un bloc très graphique
  */
 
 .contact-modal {
@@ -1418,5 +1432,3 @@ body.contact-modal-open {
     padding: 1em 5em 1em 5em;
   }
 }
-
-

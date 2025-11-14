@@ -1,6 +1,9 @@
 ( function() {
   var lightboxApi = null;
 
+  // ---------------------------------------------------------------------------
+  //  Modale de contact (permettre l'ouverture sans rechargement)
+  // ---------------------------------------------------------------------------
   var initContactModal = function() {
     var modal = document.getElementById( 'contact-modal' );
 
@@ -13,10 +16,10 @@
     var closeButtons = modal.querySelectorAll( '[data-contact-modal-close]' );
     var lastFocusedElement = null;
     var currentReference = '';
-    var currentTitle = '';
     var contactQueryKey = modal.getAttribute( 'data-contact-query-key' ) || '';
     var contactQueryValue = modal.getAttribute( 'data-contact-query-value' ) || '';
 
+    // Tous les boutons potentiels (header, CTA, liens internes) se retrouvent ici.
     var collectTriggers = function() {
       var selectors = [ '[data-contact-modal-open]', '.js-contact-modal', '[href="#contact-modal"]', '#contact-modal-trigger' ];
       var nodes = [];
@@ -34,6 +37,7 @@
       return nodes;
     };
 
+    // Mini helper maison pour lire proprement un paramètre d'URL.
     var getQueryParam = function( key ) {
       if ( ! key ) {
         return '';
@@ -56,6 +60,7 @@
       return '';
     };
 
+    // Sert à verrouiller le focus dans la modale une fois ouverte.
     var getFocusableElements = function() {
       return dialog ? dialog.querySelectorAll(
         'a[href], area[href], button:not([disabled]), input:not([disabled]):not([type="hidden"]), ' +
@@ -64,6 +69,7 @@
     };
 
     var findReferenceInput = function() {
+      // Je cible le champ Réf. Photo automatiquement même si le formulaire évolue.
       var scope = modal.querySelector( '.contact-modal__content' ) || modal;
 
       if ( ! scope ) {
@@ -91,6 +97,7 @@
     };
 
     var dispatchNativeEvents = function( element ) {
+      // Forminator ne bougera pas sans événements "input/change".
       if ( ! element ) {
         return;
       }
@@ -127,20 +134,13 @@
       dispatchNativeEvents( target );
     };
 
-    var setReferenceData = function( reference, title ) {
+    var setReferenceData = function( reference ) {
       currentReference = reference || '';
-      currentTitle = title || '';
 
       if ( currentReference ) {
         modal.setAttribute( 'data-photo-reference', currentReference );
       } else {
         modal.removeAttribute( 'data-photo-reference' );
-      }
-
-      if ( currentTitle ) {
-        modal.setAttribute( 'data-photo-title', currentTitle );
-      } else {
-        modal.removeAttribute( 'data-photo-title' );
       }
 
       applyReferencePrefill();
@@ -170,6 +170,7 @@
       }
     };
 
+    // Escape ferme la modale, les flèches naviguent.
     var handleKeydown = function( event ) {
       if ( event.key === 'Escape' ) {
         closeModal();
@@ -228,10 +229,10 @@
       trigger.addEventListener( 'click', function( event ) {
         event.preventDefault();
         var reference = trigger.getAttribute( 'data-contact-ref' ) || trigger.getAttribute( 'data-photo-reference' ) || '';
-        var title = trigger.getAttribute( 'data-contact-title' ) || trigger.getAttribute( 'data-photo-title' ) || '';
         var href = trigger.getAttribute( 'href' );
 
         if ( contactQueryKey && reference ) {
+          // Au premier clic je force l'URL pour laisser Forminator préremplir côté serveur.
           var currentQueryValue = getQueryParam( contactQueryKey );
           var needsReload = currentQueryValue !== reference;
 
@@ -241,7 +242,7 @@
           }
         }
 
-        setReferenceData( reference, title );
+        setReferenceData( reference );
         openModal();
       } );
     } );
@@ -270,7 +271,7 @@
     var initialReference = contactQueryValue || getQueryParam( contactQueryKey );
 
     if ( initialReference ) {
-      setReferenceData( initialReference, '' );
+      setReferenceData( initialReference );
     }
 
     if ( window.location.hash === '#contact-modal' ) {
@@ -278,6 +279,9 @@
     }
   };
 
+  // ---------------------------------------------------------------------------
+  //  Lightbox (navigation plein écran dans la grille)
+  // ---------------------------------------------------------------------------
   var initPhotoLightbox = function() {
     var container = document.getElementById( 'photo-lightbox' );
 
@@ -297,6 +301,7 @@
     var currentIndex = -1;
 
     var collectItems = function() {
+      // Je mappe toutes les cartes une seule fois pour gardez l'indexation cohérente.
       items = Array.prototype.slice.call( document.querySelectorAll( '.photo-card' ) );
       items.forEach( function( card, index ) {
         card.dataset.photoIndex = index;
@@ -304,6 +309,7 @@
     };
 
     var updateMeta = function( value, element ) {
+      // Je remplis les champs "Référence" et "Catégorie" de la lightbox.
       if ( ! element ) {
         return;
       }
@@ -318,6 +324,7 @@
     };
 
     var updateNavState = function() {
+      // Désactive les flèches au début/à la fin du diaporama.
       var atStart = currentIndex <= 0;
       var atEnd = currentIndex >= items.length - 1;
 
@@ -333,6 +340,7 @@
     };
 
     var setIndex = function( index ) {
+      // Charge effectivement l'image choisie dans la lightbox.
       if ( index < 0 || index >= items.length ) {
         return;
       }
@@ -477,6 +485,9 @@
     };
   };
 
+  // ---------------------------------------------------------------------------
+  //  Catalogue home : filtres + chargement progressif
+  // ---------------------------------------------------------------------------
   var initPhotoLoadMore = function() {
     var section = document.querySelector( '.home-photo-grid[data-load-more="true"]' );
 
@@ -518,6 +529,7 @@
     var filterWidgets = [];
 
     var closeAllFilters = function( exception ) {
+      // Je ferme les menus déroulants pour éviter qu'ils se chevauchent.
       filterWidgets.forEach( function( widget ) {
         if ( exception && widget === exception ) {
           return;
@@ -531,6 +543,7 @@
     };
 
     var resetGrid = function() {
+      // Nouveau filtre => je repars du début et je purge la grille.
       currentPage = 0;
       maxPages = Number.MAX_SAFE_INTEGER;
       grid.innerHTML = '';
@@ -547,6 +560,7 @@
     };
 
     var setLoadingState = function( state ) {
+      // J'utilise ce flag pour éviter les doubles requêtes.
       isLoading = state;
       if ( button ) {
         button.disabled = state;
@@ -560,6 +574,7 @@
     };
 
     var updateButtonVisibility = function() {
+      // Cache le bouton "voir plus" quand on atteint la dernière page.
       if ( ! button ) {
         return;
       }
@@ -575,16 +590,19 @@
     updateButtonVisibility();
 
     var handleError = function( text ) {
+      // Affichage simple d'une erreur (ex: serveur indisponible).
       message.textContent = text;
       message.classList.add( 'is-error' );
     };
 
     var clearMessage = function() {
+      // Reset du message d'état sous la grille.
       message.textContent = '';
       message.classList.remove( 'is-error' );
     };
 
     var loadMore = function( nextPage, options ) {
+      // Fonction centrale pour récupérer une page supplémentaire.
       if ( isLoading || nextPage > maxPages ) {
         return;
       }
@@ -838,6 +856,9 @@
     }
   };
 
+  // ---------------------------------------------------------------------------
+  //  Point d'entrée
+  // ---------------------------------------------------------------------------
   var onReady = function() {
     initContactModal();
     lightboxApi = initPhotoLightbox();

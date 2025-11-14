@@ -112,7 +112,6 @@ $contact_link .= '#contact-modal';
         <?php if ( $photo_reference ) : ?>
           data-photo-reference="<?php echo esc_attr( $photo_reference ); ?>"
         <?php endif; ?>
-        data-photo-title="<?php echo esc_attr( $photo_title ); ?>"
       >
         <?php esc_html_e( 'Contact', 'trinity' ); ?>
       </a>

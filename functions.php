@@ -7,14 +7,17 @@
 
 require_once get_template_directory() . '/addon/resize-upload.php';
 
-
 if ( ! defined( 'ABSPATH' ) ) {
   exit;
 }
 
+/* -------------------------------------------------------------------------- */
+/*  Bootstrap du thème                                                        */
+/* -------------------------------------------------------------------------- */
+
 if ( ! function_exists( 'trinity_setup' ) ) {
   /**
-   * Configure les fonctionnalités de base du thème.
+   * Je configure les fonctionnalités natives dont j'ai besoin au chargement du thème.
    */
   function trinity_setup() {
     load_theme_textdomain( 'trinity', get_template_directory() . '/languages' );
@@ -56,69 +59,77 @@ if ( ! function_exists( 'trinity_setup' ) ) {
 }
 add_action( 'after_setup_theme', 'trinity_setup' );
 
-/**
- * Enfile les styles et scripts du thème.
- */
-function trinity_enqueue_assets() {
-  $theme_version = wp_get_theme()->get( 'Version' );
+if ( ! function_exists( 'trinity_enqueue_assets' ) ) {
+  /**
+   * J'enfile ici tous les styles/scripts publics pour garder un seul point d'entrée.
+   */
+  function trinity_enqueue_assets() {
+    $theme_version = wp_get_theme()->get( 'Version' );
 
-  wp_enqueue_style(
-    'trinity-style',
-    get_stylesheet_uri(),
-    array(),
-    $theme_version
-  );
+    wp_enqueue_style(
+      'trinity-style',
+      get_stylesheet_uri(),
+      array(),
+      $theme_version
+    );
 
-  wp_enqueue_script(
-    'trinity-navigation',
-    get_template_directory_uri() . '/assets/js/navigation.js',
-    array(),
-    $theme_version,
-    true
-  );
+    wp_enqueue_script(
+      'trinity-navigation',
+      get_template_directory_uri() . '/assets/js/navigation.js',
+      array(),
+      $theme_version,
+      true
+    );
 
-  wp_enqueue_script(
-    'trinity-scripts',
-    get_template_directory_uri() . '/assets/js/scripts.js',
-    array(),
-    $theme_version,
-    true
-  );
+    wp_enqueue_script(
+      'trinity-scripts',
+      get_template_directory_uri() . '/assets/js/scripts.js',
+      array(),
+      $theme_version,
+      true
+    );
 
-  wp_localize_script(
-    'trinity-scripts',
-    'TrinityLoadMore',
-    array(
-      'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-      'nonce'   => wp_create_nonce( 'trinity_load_more_photos' ),
-      'strings' => array(
-        'error' => __( 'Impossible de charger plus de photos pour le moment.', 'trinity' ),
-      ),
-    )
-  );
+    wp_localize_script(
+      'trinity-scripts',
+      'TrinityLoadMore',
+      array(
+        'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+        'nonce'   => wp_create_nonce( 'trinity_load_more_photos' ),
+        'strings' => array(
+          'error' => __( 'Impossible de charger plus de photos pour le moment.', 'trinity' ),
+        ),
+      )
+    );
+  }
 }
 add_action( 'wp_enqueue_scripts', 'trinity_enqueue_assets' );
 
-/**
- * Déclare une zone de widgets par défaut.
- */
-function trinity_widgets_init() {
-  register_sidebar(
-    array(
-      'name'          => __( 'Barre latérale', 'trinity' ),
-      'id'            => 'sidebar-1',
-      'description'   => __( 'Ajoutez ici vos widgets.', 'trinity' ),
-      'before_widget' => '<section id="%1$s" class="widget %2$s">',
-      'after_widget'  => '</section>',
-      'before_title'  => '<h2 class="widget-title">',
-      'after_title'   => '</h2>',
-    )
-  );
+if ( ! function_exists( 'trinity_widgets_init' ) ) {
+  /**
+   * Je garde cette déclaration de sidebar même si elle reste vide pour l'instant.
+   */
+  function trinity_widgets_init() {
+    register_sidebar(
+      array(
+        'name'          => __( 'Barre latérale', 'trinity' ),
+        'id'            => 'sidebar-1',
+        'description'   => __( 'Ajoutez ici vos widgets.', 'trinity' ),
+        'before_widget' => '<section id="%1$s" class="widget %2$s">',
+        'after_widget'  => '</section>',
+        'before_title'  => '<h2 class="widget-title">',
+        'after_title'   => '</h2>',
+      )
+    );
+  }
 }
 add_action( 'widgets_init', 'trinity_widgets_init' );
 
+/* -------------------------------------------------------------------------- */
+/*  Customizer et options                                                      */
+/* -------------------------------------------------------------------------- */
+
 /**
- * Ajoute un réglage Customizer pour ajuster la hauteur du logo.
+ * Je déclare mes réglages Customizer pour exposer les options utiles côté admin.
  *
  * @param WP_Customize_Manager $wp_customize Gestionnaire du customizer.
  */
@@ -167,7 +178,7 @@ function trinity_customize_register( $wp_customize ) {
 add_action( 'customize_register', 'trinity_customize_register' );
 
 /**
- * Valide la hauteur du logo saisie dans le Customizer.
+ * Je valide la hauteur du logo avant de l'appliquer.
  *
  * @param mixed $value Valeur à valider.
  * @return int Hauteur positive.
@@ -183,7 +194,7 @@ function trinity_sanitize_logo_height( $value ) {
 }
 
 /**
- * Sanitize pour les cases à cocher Customizer.
+ * Je sécurise les cases à cocher envoyées par le Customizer.
  *
  * @param mixed $checked Valeur du champ.
  * @return bool
@@ -193,7 +204,7 @@ function trinity_sanitize_checkbox( $checked ) {
 }
 
 /**
- * Applique les styles personnalisés du logo.
+ * Je pousse la hauteur du logo directement dans la feuille de style.
  */
 function trinity_enqueue_custom_logo_style() {
   $max_height = get_theme_mod( 'trinity_logo_max_height', 48 );
@@ -213,7 +224,7 @@ function trinity_enqueue_custom_logo_style() {
 add_action( 'wp_enqueue_scripts', 'trinity_enqueue_custom_logo_style', 20 );
 
 /**
- * Enfile les scripts Customizer côté panneau.
+ * Je charge mes helpers Customizer côté panneau (contrôle).
  */
 function trinity_customize_controls_enqueue_scripts() {
   wp_enqueue_script(
@@ -227,7 +238,7 @@ function trinity_customize_controls_enqueue_scripts() {
 add_action( 'customize_controls_enqueue_scripts', 'trinity_customize_controls_enqueue_scripts' );
 
 /**
- * Enfile les scripts Customizer côté prévisualisation.
+ * Et je charge aussi la prévisualisation en direct.
  */
 function trinity_customize_preview_enqueue_scripts() {
   wp_enqueue_script(
@@ -240,8 +251,12 @@ function trinity_customize_preview_enqueue_scripts() {
 }
 add_action( 'customize_preview_init', 'trinity_customize_preview_enqueue_scripts' );
 
+/* -------------------------------------------------------------------------- */
+/*  Ajax catalogue & helpers photo                                            */
+/* -------------------------------------------------------------------------- */
+
 /**
- * Handler AJAX pour charger plus de photos.
+ * Je gère ici le "load more" du catalogue pour éviter la duplication côté JS.
  */
 function trinity_ajax_load_more_photos() {
   check_ajax_referer( 'trinity_load_more_photos', 'nonce' );
@@ -347,7 +362,7 @@ add_action( 'wp_ajax_nopriv_trinity_load_more_photos', 'trinity_ajax_load_more_p
 
 if ( ! function_exists( 'trinity_get_photo_field_value' ) ) {
   /**
-   * Retourne une valeur ACF/meta nettoyée pour une photo.
+   * J'uniformise la récupération des champs ACF/meta pour éviter les surprises.
    *
    * @param int    $photo_id   ID de la photo.
    * @param string $field_name Nom du champ.
@@ -396,7 +411,7 @@ if ( ! function_exists( 'trinity_get_photo_field_value' ) ) {
 
 if ( ! function_exists( 'trinity_get_photo_image_data' ) ) {
   /**
-   * Récupère l'image principale d'une photo.
+   * Je récupère une image exploitable quel que soit le format (ACF ou vignette WP).
    *
    * @param int    $photo_id ID de la photo.
    * @param string $size     Taille souhaitée.
@@ -437,7 +452,7 @@ if ( ! function_exists( 'trinity_get_photo_image_data' ) ) {
 
 if ( ! function_exists( 'trinity_get_photo_terms_as_text' ) ) {
   /**
-   * Retourne les termes d'une taxonomie sous forme de texte.
+   * J'affiche rapidement les taxonomies formatées (ex: Catégorie / Type).
    *
    * @param int    $photo_id ID de la photo.
    * @param string $taxonomy Taxonomie ciblée.
@@ -467,7 +482,7 @@ if ( ! function_exists( 'trinity_get_photo_terms_as_text' ) ) {
 
 if ( ! function_exists( 'trinity_prepare_photo_nav_data' ) ) {
   /**
-   * Prépare les données nécessaires pour un lien de navigation.
+   * Ce helper me prépare tout ce qu'il faut pour les liens précédent/suivant.
    *
    * @param int $photo_id ID de la photo.
    *
@@ -493,7 +508,7 @@ if ( ! function_exists( 'trinity_prepare_photo_nav_data' ) ) {
 
 if ( ! function_exists( 'trinity_get_adjacent_photo_data' ) ) {
   /**
-   * Retourne la photo adjacente selon la date ACF.
+   * Je recherche la photo adjacente (triée sur la date ACF) vers l'avant ou l'arrière.
    *
    * @param int    $photo_id     Photo courante.
    * @param string $current_date Date courante (Y-m-d).
@@ -561,7 +576,7 @@ if ( ! function_exists( 'trinity_get_adjacent_photo_data' ) ) {
 
 if ( ! function_exists( 'trinity_get_photo_navigation' ) ) {
   /**
-   * Retourne les données de navigation (précédent / suivant).
+   * Simple façade pour éviter de dupliquer la logique côté template.
    *
    * @param int $photo_id ID de la photo courante.
    *
@@ -579,7 +594,7 @@ if ( ! function_exists( 'trinity_get_photo_navigation' ) ) {
 
 if ( ! function_exists( 'trinity_get_related_photos' ) ) {
   /**
-   * Retourne une sélection de photos de la même catégorie.
+   * Je récupère rapidement des photos connexes (même catégorie) pour la section "vous aimerez aussi".
    *
    * @param int $photo_id ID de la photo courante.
    * @param int $limit    Nombre maximum de photos.
@@ -628,7 +643,7 @@ if ( ! function_exists( 'trinity_get_related_photos' ) ) {
 
 if ( ! function_exists( 'trinity_get_contact_reference_query_key' ) ) {
   /**
-   * Clé de requête utilisée pour préremplir la référence photo dans le formulaire.
+   * Je centralise le nom du paramètre GET utilisé par Forminator.
    *
    * @return string
    */
@@ -639,7 +654,7 @@ if ( ! function_exists( 'trinity_get_contact_reference_query_key' ) ) {
 
 if ( ! function_exists( 'trinity_get_contact_reference_from_request' ) ) {
   /**
-   * Récupère la référence photo transmise via la requête.
+   * Je lis la référence passée dans l'URL pour la redistribuer côté JS.
    *
    * @return string
    */
