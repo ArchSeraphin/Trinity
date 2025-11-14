@@ -515,6 +515,14 @@ body.photo-lightbox-open {
   position: relative;
 }
 
+.photo-card__permalink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  text-indent: -9999px;
+}
+
 .photo-card__image {
   display: block;
   width: 100%;
@@ -538,6 +546,7 @@ body.photo-lightbox-open {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 2;
 }
 
 .photo-card:hover .photo-card__overlay,
@@ -613,7 +622,7 @@ body.photo-lightbox-open {
   font-size: 14px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  z-index: 1;
+  z-index: 3;
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -837,6 +846,18 @@ body.photo-lightbox-open {
   margin-bottom: 5%;
 }
 
+@media (hover: none) and (pointer: coarse) {
+  .photo-card__image {
+    transform: none !important;
+  }
+
+  .photo-card__overlay,
+  .photo-card__icon--expand,
+  .photo-card__meta {
+    display: none;
+  }
+}
+
 @media (max-width: 1024px) {
   .photo-info__layout {
     grid-template-columns: 1fr;
@@ -852,7 +873,7 @@ body.photo-lightbox-open {
 
   .photo-info__cta-nav {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .photo-info__nav {
@@ -882,6 +903,7 @@ body.photo-lightbox-open {
   .home-photo-grid__filters {
     flex-direction: column;
     margin-bottom: 2rem;
+    width: 270px;
   }
 
   .home-photo-grid__filter {
@@ -931,7 +953,7 @@ body.photo-lightbox-open {
 
   .photo-info__cta {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .photo-info__nav {
@@ -941,6 +963,14 @@ body.photo-lightbox-open {
 
   .photo-info__nav-link {
     padding: 0.25rem 0;
+  }
+
+  .photo-info__visual {
+    order: 1;
+  }
+
+  .photo-info__details {
+    order: 2;
   }
 }
 
@@ -1156,7 +1186,7 @@ a:focus {
     z-index: 20;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
+    align-items: center;
     overflow-y: auto;
   }
 
@@ -1186,6 +1216,14 @@ a:focus {
 
   body.menu-open {
     overflow: hidden;
+  }
+
+  .photo-info__related-title {
+    text-align: center;
+  }
+
+  .photo-info__contact-button {
+    width: 100%;
   }
 }
 

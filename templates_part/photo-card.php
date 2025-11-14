@@ -119,6 +119,11 @@ $photo_categories_string = ! empty( $photo_categories ) ? implode( ' / ', $photo
   data-photo-link="<?php echo esc_attr( $photo_link ); ?>"
 >
   <figure class="photo-card__figure">
+    <a
+      class="photo-card__permalink"
+      href="<?php echo esc_url( $photo_link ); ?>"
+      aria-label="<?php echo esc_attr( sprintf( __( 'Voir la photo %s', 'trinity' ), $photo_title ) ); ?>"
+    ></a>
     <img class="photo-card__image" src="<?php echo esc_url( $image_url ); ?>" alt="<?php echo esc_attr( $image_alt ); ?>" loading="lazy" />
     <div class="photo-card__overlay">
       <a class="photo-card__link" href="<?php echo esc_url( $photo_link ); ?>">
