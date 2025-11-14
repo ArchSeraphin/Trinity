@@ -476,13 +476,15 @@ body.photo-lightbox-open {
   font-size: 0.95rem;
   letter-spacing: 0.08em;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.3s ease, color 0.3s ease;
+  border-radius: 2px;
 }
 
 .home-photo-grid__load-more:hover,
 .home-photo-grid__load-more:focus-visible {
-  transform: translateY(-2px);
   outline: none;
+  background-color: #000;
+  color: #fff;
 }
 
 .home-photo-grid__load-more:disabled,
@@ -771,16 +773,17 @@ body.photo-lightbox-open {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.3s ease, color 0.3s ease;
   text-decoration: none;
   color: #111827;
+  border-radius: 2px;
 }
 
 .photo-info__contact-button:hover,
 .photo-info__contact-button:focus-visible {
-  transform: translateY(-2px);
-  opacity: 0.85;
   outline: none;
+  background-color: #000;
+  color: #fff;
 }
 
 .photo-info__nav {

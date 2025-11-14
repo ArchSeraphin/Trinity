@@ -602,7 +602,7 @@
     };
 
     var loadMore = function( nextPage, options ) {
-      // Fonction centrale pour récupérer une page supplémentaire.
+      // Fonction centrale pour récupérer une page supplémentaire. -------------------------------------------
       if ( isLoading || nextPage > maxPages ) {
         return;
       }
