@@ -476,7 +476,7 @@ body.photo-lightbox-open {
   font-size: 0.95rem;
   letter-spacing: 0.08em;
   cursor: pointer;
-  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.3s ease, color 0.3s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
   border-radius: 2px;
 }
 
@@ -773,7 +773,7 @@ body.photo-lightbox-open {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   cursor: pointer;
-  transition: transform 0.25s ease, opacity 0.25s ease, background-color 0.3s ease, color 0.3s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
   text-decoration: none;
   color: #111827;
   border-radius: 2px;
@@ -876,6 +876,11 @@ body.photo-lightbox-open {
 }
 
 @media (max-width: 1024px) {
+  .photo-info {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
   .photo-info__layout {
     grid-template-columns: 1fr;
   }
